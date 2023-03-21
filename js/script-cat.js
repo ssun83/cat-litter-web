@@ -21,6 +21,7 @@ let ocpButton = document.getElementById("ocpButton");
 // labels
 let statStatus = document.getElementById("statStatus");
 let dataStatus = document.getElementById("dataStatus");
+let tableRow = document.getElementById("tableData");
 
 myBLE = new p5ble();
 
@@ -83,26 +84,34 @@ function gotCharacteristics(error, characteristics) {
 // A function that will be called once got characteristics
 //This is our gotValue
 function handleNotifications(data) {
-  //console.log("data: ", data)
-  if(data.includes('data') || buffer.includes('data')) {
-    buffer = buffer.concat(data);
-  }
-  console.log(buffer)
-  if (buffer.includes('$')){
-    myValue = buffer
-    buffer = ""
-    myValue = myValue.replace('$','')
-    myValue = myValue.replaceAll("'",'"')
-    myValue = myValue.replaceAll("'",'"')
-    jsonData = JSON.parse(myValue).data;
-    v = jsonData.v;
-    i = jsonData.i;
-    t = jsonData.t;
-    console.log(v,i,t);
-  }
+    //console.log("data: ", data)
+    if (data.includes('data') || buffer.includes('data')) {
+        buffer = buffer.concat(data);
+    }
+    console.log(buffer)
+    if (buffer.includes('$')) {
+        myValue = buffer
+        buffer = ""
+        myValue = myValue.replace('$', '')
+        myValue = myValue.replaceAll("'", '"')
+        myValue = myValue.replaceAll("'", '"')
+        jsonData = JSON.parse(myValue).data;
+        v = jsonData.v;
+        i = jsonData.i;
+        t = jsonData.t;
+        console.log(v, i, t);
 
-  // Add a event handler when the device is disconnected
-  myBLE.onDisconnected(onDisconnected)
+        var row = tableRow.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = t.toString();
+        cell2.innerHTML = i.toString();
+        cell3.innerHTML = v.toString();
+    }
+
+    // Add a event handler when the device is disconnected
+    myBLE.onDisconnected(onDisconnected)
 }
 
 function readToBle() {
@@ -111,6 +120,6 @@ function readToBle() {
 }
 
 function writeToBle(writeValue) {
-  // Write the value of the input to the txCharacteristic
-  myBLE.write(rxCharacteristic, writeValue);
+    // Write the value of the input to the txCharacteristic
+    myBLE.write(rxCharacteristic, writeValue);
 }

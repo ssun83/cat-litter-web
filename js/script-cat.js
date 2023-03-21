@@ -7,6 +7,7 @@ let jsonData = {};
 let t = 0;
 let v = 0;
 let i = 0;
+let timenow = "";
 let myBLE;
 let isConnected = false;
 
@@ -90,6 +91,9 @@ function handleNotifications(data) {
     }
     console.log(buffer)
     if (buffer.includes('$')) {
+
+        timenow = new Date().toLocaleTimeString();
+
         myValue = buffer
         buffer = ""
         myValue = myValue.replace('$', '')
@@ -100,12 +104,12 @@ function handleNotifications(data) {
         i = jsonData.i;
         t = jsonData.t;
         console.log(v, i, t);
-
+    
         var row = tableRow.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
-        cell1.innerHTML = t.toString();
+        cell1.innerHTML = timenow;
         cell2.innerHTML = i.toString();
         cell3.innerHTML = v.toString();
     }

@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 200;
+    text-emphasis: none;
+    text-align: center;
+}
+header{
+    padding: 1rem 2em!important;
+    background-color: #9dba57;
+    color: white;
+    height: 30%;
+}
+
+h1{
+    padding: .4em 0;
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 25%);
+}
+.flex-container {
+    /* We first create a flex layout context */
+    display: flex;
+
+    /* Then we define the flow direction
+       and if we allow the items to wrap
+     * Remember this is the same as:
+     * flex-direction: row;
+     * flex-wrap: wrap;
+     */
+    flex-flow: row wrap;
+
+    /* Then we define how is distributed the remaining space */
+    justify-content: space-around;
+
+    padding: 10px;
+    margin: 0;
+    list-style: none;
+  }
+
+  .flex-item {
+    /* padding: 10px; */
+    width: 45%;
+    height: 200px;
+    margin-top: 20px;
+    line-height: 200px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
+
+.menu{
+	border-radius: 25px;
+	/* margin: 10px; */
+	/* width: 40%;
+    height: 150px; */
+    box-shadow: 0 9px 30px -5px rgb(50 50 83 / 25%), 0 8px 8px -12px rgb(0 0 0 / 20%), 0 -6px 16px -6px rgb(0 0 0 / 3%);
+}
+
+.session{
+    background-color: #18a46f;
+}
+
+.stats{
+    background-color: #f55700;
+}
+
+.settings{
+    background-color: #aa1994;
+}
+
+.tutorials{
+    background-color: #0168b8;
+}
+
+.enlace{
+    text-decoration: none;
+    color: white;
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 25%);
+    font-size: 1.5em;
+}

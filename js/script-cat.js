@@ -22,7 +22,7 @@ let ocpButton = document.getElementById("ocpButton");
 // labels
 let statStatus = document.getElementById("statStatus");
 let dataStatus = document.getElementById("dataStatus");
-let tableRow = document.getElementById("tableData");
+let tableRow = document.getElementById("dataTable");
 
 myBLE = new p5ble();
 

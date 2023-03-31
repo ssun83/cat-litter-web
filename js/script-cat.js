@@ -16,7 +16,7 @@ let isConnected = false;
 // buttons
 let connectButton = document.getElementById("connectButton");
 let disconnectButton = document.getElementById("disconnectButton");
-let startButton = document.getElementById("collectButton");
+// let startButton = document.getElementById("collectButton");
 let exportButton = document.getElementById("exportButton");
 let pumpButton = document.getElementById("pumpButton");
 let ocpButton = document.getElementById("ocpButton");
@@ -105,9 +105,9 @@ disconnectButton.addEventListener('click', function () {
     disconnectToBle();
 })
 
-startButton.addEventListener('click', function () {
-    readToBle();
-})
+// startButton.addEventListener('click', function () {
+//     readToBle();
+// })
 
 ocpButton.addEventListener('click', function () {
     writeToBle("default ocp");
@@ -122,7 +122,7 @@ function connectToBle() {
     myBLE.connect(serviceUuid, gotCharacteristics);
     isConnected = myBLE.isConnected();
     console.log(isConnected)
-    statStatus.innerHTML = (isConnected ? "catStat Connected" : "catStat Disconnected");
+    statStatus.innerHTML = (isConnected ? "PURRtentio: Connected" : "PURRtentio: Disconnected");
 }
 
 function disconnectToBle() {
@@ -130,13 +130,13 @@ function disconnectToBle() {
     myBLE.disconnect();
     // Check if myBLE is connected
     isConnected = myBLE.isConnected();
-    statStatus.innerHTML = (isConnected ? "catStat Connected" : "catStat Disconnected");
+    statStatus.innerHTML = (isConnected ? "PURRtentio: Connected" : "PURRtentio: Disconnected");
 }
 
 function onDisconnected() {
     console.log('Device got disconnected.');
     isConnected = false;
-    statStatus.innerHTML = (isConnected ? "catStat Connected" : "catStat Disconnected");
+    statStatus.innerHTML = (isConnected ? "PURRtentio: Connected" : "PURRtentio: Disconnected");
 }
 
 // A function that will be called once got characteristics
@@ -146,17 +146,26 @@ function gotCharacteristics(error, characteristics) {
     console.log('characteristics: ', characteristics);
     rxCharacteristic = characteristics[0]
     txCharacteristic = characteristics[1];
+    readToBle();
     isConnected = myBLE.isConnected();
 
     //just so the connection status is up to date always
-    statStatus.innerHTML = (isConnected ? "catStat Connected" : "catStat Disconnected");
+    statStatus.innerHTML = (isConnected ? "PURRtentio Connected" : "PURRtentio Disconnected");
 }
 
 // A function that will be called once got characteristics
 //This is our gotValue
 function handleNotifications(data) {
+
+    if (data.includes("test starting")){
+        gauge.set(Math.random() * 100);
+        dataStatus.innerHTML = "TESTING"
+    }
     //console.log("data: ", data)
-    if (data.includes('data') || buffer.includes('data')) {
+    // if (data.includes('data') || buffer.includes('data')) {
+    //     buffer = buffer.concat(data);
+    // }
+    if (data) {
         buffer = buffer.concat(data);
     }
     console.log(buffer)
@@ -172,6 +181,7 @@ function handleNotifications(data) {
         myValue = myValue.replaceAll("'", '"')
         myValue = myValue.replaceAll("'", '"')
         jsonData = JSON.parse(myValue).data;
+        console.log(jsonData)
         v = jsonData.v;
         i = jsonData.i;
         t = jsonData.t;
@@ -230,7 +240,7 @@ function tableToCSV() {
     // Combine each row data with new line character
     csv_data = csv_data.join('\n');
 
-    // Call this function to download csv file 
+    // Call this function to download csv file
     downloadCSVFile(csv_data);
 
 }

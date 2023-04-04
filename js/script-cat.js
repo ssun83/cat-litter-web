@@ -22,7 +22,7 @@ let labels = timeSeries;
 let data = {
     labels: labels,
     datasets: [{
-        label: 'v',
+        label: 'sodium (Na)',
         backgroundColor: 'rgb(62,222,209)',
         borderColor: 'rgb(62,222,209)',
         data: concentrationSeries,
@@ -38,7 +38,7 @@ let config = {
         plugins: {
             title: {
                 display: true,
-                text: 'v vs. time'
+                text: 'concentration level vs. time'
             },
             autocolors: false,
         },
@@ -51,14 +51,14 @@ let config = {
                 display: true,
                 title: {
                     display: true,
-                    text: 't'
+                    text: 'time'
                 }
             },
             y: {
                 display: true,
                 title: {
                     display: true,
-                    text: 'v'
+                    text: 'concentration (mM)'
                 }
             }
         }
@@ -234,7 +234,7 @@ function handleNotifications(data) {
         // done = myValue.done;
         jsonData = JSON.parse(myValue).data;
         jsonDone = JSON.parse(myValue).done;
-        
+
         console.log(jsonData)
         v = jsonData.v;
         i = jsonData.i;
@@ -255,15 +255,17 @@ function handleNotifications(data) {
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
         cell1.innerHTML = timenow;
         cell2.innerHTML = i.toString();
         cell3.innerHTML = v.toString();
+        cell4.innerHTML = concentration.toString();
 
         //update the text
         if(jsonDone){
-            dataStatus.innerHTML = "LAST RECORD: \n" + timenow + "\n" + 
-                                    "Concentration: " + concentration.toString() + " mM" + 
-                                    "\n" + "Current: " + i.toString() + " mA" + "\n" + 
+            dataStatus.innerHTML = "LAST RECORD: \n" + timenow + "\n" +
+                                    "Concentration: " + concentration.toString() + " mM" +
+                                    "\n" + "Current: " + i.toString() + " mA" + "\n" +
                                     "Potential: " + v.toString() + " V";
         }
         actualizarData(myChart);
@@ -330,7 +332,7 @@ function downloadCSVFile(csv_data) {
     var temp_link = document.createElement('a');
 
     // Download csv file
-    temp_link.download = "table_study.csv";
+    temp_link.download = "table_study"+timenow+".csv";
     var url = window.URL.createObjectURL(CSVFile);
     temp_link.href = url;
 

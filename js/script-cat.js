@@ -4,6 +4,7 @@ let rxCharacteristic;
 let myValue = "0";
 let buffer = "";
 let jsonData = {};
+let jsonDone = false;
 let t = 0;
 let v = 0;
 let i = 0;
@@ -94,17 +95,17 @@ var opts = {
     },
     // static labels
     staticLabels: {
-        font: "10px sans-serif",
-        labels: [200, 500, 2100, 2800],
+        font: "15px sans-serif",
+        labels: [50, 150, 300, 380],
         fractionDigits: 0
     },
     // static zones
     staticZones: [
-        { strokeStyle: "#F03E3E", min: 0, max: 10 },
-        { strokeStyle: "#FFDD00", min: 10, max: 30 },
-        { strokeStyle: "#30B32D", min: 30, max: 40 },
-        { strokeStyle: "#FFDD00", min: 40, max: 70 },
-        { strokeStyle: "#F03E3E", min: 70, max: 100 }
+        { strokeStyle: "#ef476f", min: 0, max: 20 },
+        { strokeStyle: "#E0D26E", min: 20, max: 35 },
+        { strokeStyle: "#06D6A0", min: 35, max: 175 },
+        { strokeStyle: "#E0D26E", min: 175, max: 225 },
+        { strokeStyle: "#ef476f", min: 225, max: 380 }
     ],
     // render ticks
     renderTicks: {
@@ -118,7 +119,7 @@ var opts = {
         subColor: "#666666"
     },
     // the span of the gauge arc
-    angle: 0.15,
+    angle: 0.10,
     // line thickness
     lineWidth: 0.44,
     // radius scale
@@ -230,9 +231,11 @@ function handleNotifications(data) {
         myValue = myValue.replace('False', 'false');
         myValue = myValue.replaceAll("'", '"');
         myValue = myValue.replaceAll("'", '"');
-        done = myValue.done;
+        // done = myValue.done;
         jsonData = JSON.parse(myValue).data;
-        //console.log(jsonData);
+        jsonDone = JSON.parse(myValue).done;
+        
+        console.log(jsonData)
         v = jsonData.v;
         i = jsonData.i;
         t = jsonData.t;
@@ -247,7 +250,6 @@ function handleNotifications(data) {
         console.log(concentrationSeries);
 
         //update the gauge
-
         gauge.set(concentration);
         var row = tableRow.insertRow(-1);
         var cell1 = row.insertCell(0);
@@ -257,6 +259,13 @@ function handleNotifications(data) {
         cell2.innerHTML = i.toString();
         cell3.innerHTML = v.toString();
 
+        //update the text
+        if(jsonDone){
+            dataStatus.innerHTML = "LAST RECORD: \n" + timenow + "\n" + 
+                                    "Concentration: " + concentration.toString() + " mM" + 
+                                    "\n" + "Current: " + i.toString() + " mA" + "\n" + 
+                                    "Potential: " + v.toString() + " V";
+        }
         actualizarData(myChart);
 
     }

@@ -14,6 +14,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styless_home.css">
+
+    <!-- chart js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js"
+        integrity="sha512-VCHVc5miKoln972iJPvkQrUYYq7XpxXzvqNfiul1H4aZDwGBGC0lq373KNleaB2LpnC2a/iNfE5zoRYmB4TRDQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.0.2/chartjs-plugin-annotation.min.js"></script>
+
 </head>
 
 <body>
@@ -30,14 +38,14 @@
         <button id='collectButton' class='button-body' type='button'>Collect data</button>
         <button id='exportButton' class='button-body' type='button' onclick="tableToCSV()">Export data</button>
         <button id='pumpButton' class='button-body' type='button'>Pump!</button>
-        <p id='dataStatus'>DATA</p>
+        <p id='dataStatus'>Data</p>
 
         <div>
             <canvas id="demo"></canvas>
             <div id="preview-textfield"></div>
         </div>
 
-        <table >
+        <table>
             <thead>
                 <tr>
                     <td>Time</td>
@@ -51,9 +59,14 @@
 
     </div>
 
+    <div style="margin-left: 10%; margin-right: 10%;">
+        <h2>Plot</h2>
+        <canvas width="60%" height="20%" id="myChart"></canvas>
+    </div>
+
     <script type="text/javascript" src="gauge/dist/gauge.js"></script>
     <script type="text/javascript" src="js/script-cat.js"></script>
-    
+
 
 </body>
 

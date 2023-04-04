@@ -13,6 +13,57 @@ let timenow = "";
 let myBLE;
 let isConnected = false;
 
+// data for chart
+let timeSeries = [];
+let voltageSeries = [];
+let labels = timeSeries;
+
+let data = {
+    labels: labels,
+    datasets: [{
+        label: 'v',
+        backgroundColor: 'rgb(62,222,209)',
+        borderColor: 'rgb(62,222,209)',
+        data: voltageSeries,
+    }
+    ]
+};
+
+let config = {
+    type: 'line',
+    data: data,
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'v vs. time'
+            },
+            autocolors: false,
+        },
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 't'
+                }
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'v'
+                }
+            }
+        }
+    },
+};
+
 // buttons
 let connectButton = document.getElementById("connectButton");
 let disconnectButton = document.getElementById("disconnectButton");
@@ -177,6 +228,13 @@ function handleNotifications(data) {
         t = jsonData.t;
         console.log(v, i, t);
 
+        // add new data to the chart
+        timeSeries.push(timenow);
+        voltageSeries.push(Math.round(Math.abs(v * 10)));
+        console.log(voltageSeries);
+
+        //update the gauge
+
         gauge.set(Math.abs(v * 20));
         var row = tableRow.insertRow(-1);
         var cell1 = row.insertCell(0);
@@ -185,6 +243,8 @@ function handleNotifications(data) {
         cell1.innerHTML = timenow;
         cell2.innerHTML = i.toString();
         cell3.innerHTML = v.toString();
+
+        actualizarData(myChart)
 
     }
 
@@ -260,4 +320,16 @@ function downloadCSVFile(csv_data) {
     // trigger download
     temp_link.click();
     document.body.removeChild(temp_link);
+}
+
+var myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+);
+
+function actualizarData(chart) {
+    chart.data.labels = timeSeries;
+    chart.data.datasets.data = voltageSeries;
+    
+    chart.update();
 }

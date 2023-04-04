@@ -7,13 +7,15 @@ let jsonData = {};
 let t = 0;
 let v = 0;
 let i = 0;
+let concentration = 0;
+let done = false;
 let timenow = "";
 let myBLE;
 let isConnected = false;
 
 // data for chart
 let timeSeries = [];
-let voltageSeries = [];
+let concentrationSeries = [];
 let labels = timeSeries;
 
 let data = {
@@ -22,7 +24,7 @@ let data = {
         label: 'v',
         backgroundColor: 'rgb(62,222,209)',
         borderColor: 'rgb(62,222,209)',
-        data: voltageSeries,
+        data: concentrationSeries,
     }
     ]
 };
@@ -137,7 +139,7 @@ var gauge = new Gauge(target).setOptions(opts);
 document.getElementById("preview-textfield").className = "preview-textfield";
 gauge.setTextField(document.getElementById("preview-textfield"));
 
-gauge.maxValue = 100;
+gauge.maxValue = 380;
 gauge.setMinValue(0);
 gauge.animationSpeed = 32;
 gauge.set(0);
@@ -216,33 +218,37 @@ function handleNotifications(data) {
           buffer = buffer.concat(data);
         }
     }
-    console.log(buffer)
+    //console.log(buffer)
 
     if (buffer.includes('$')) {
         timenow = new Date().toLocaleTimeString();
 
-        myValue = buffer
-        buffer = ""
-        myValue = myValue.replace('$', '')
-        myValue = myValue.replace('True', 'true')
-        myValue = myValue.replace('False', 'false')
-        myValue = myValue.replaceAll("'", '"')
-        myValue = myValue.replaceAll("'", '"')
+        myValue = buffer;
+        buffer = "";
+        myValue = myValue.replace('$', '');
+        myValue = myValue.replace('True', 'true');
+        myValue = myValue.replace('False', 'false');
+        myValue = myValue.replaceAll("'", '"');
+        myValue = myValue.replaceAll("'", '"');
+        done = myValue.done;
         jsonData = JSON.parse(myValue).data;
-        console.log(jsonData)
+        //console.log(jsonData);
         v = jsonData.v;
         i = jsonData.i;
         t = jsonData.t;
         console.log(v, i, t);
 
+        concentration = v2c(v);
+        console.log(concentration);
+
         // add new data to the chart
         timeSeries.push(timenow);
-        voltageSeries.push(Math.round(Math.abs(v * 10)));
-        console.log(voltageSeries);
+        concentrationSeries.push(concentration);
+        console.log(concentrationSeries);
 
         //update the gauge
 
-        gauge.set(Math.abs(v * 20));
+        gauge.set(concentration);
         var row = tableRow.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -251,7 +257,7 @@ function handleNotifications(data) {
         cell2.innerHTML = i.toString();
         cell3.innerHTML = v.toString();
 
-        actualizarData(myChart)
+        actualizarData(myChart);
 
     }
 
@@ -336,7 +342,22 @@ var myChart = new Chart(
 
 function actualizarData(chart) {
     chart.data.labels = timeSeries;
-    chart.data.datasets.data = voltageSeries;
-    
+    chart.data.datasets.data = concentrationSeries;
+
     chart.update();
+}
+
+function v2c(v) {
+    var vn = (v-0.336387)*0.001325;
+    var co = 0;
+    if (Math.abs(vn) > 1) {
+      co = 1-(0.1*Math.abs(vn));
+    } else if (vn < -0.6){
+      co = -0.6+(0.1*Math.abs(vn));
+    }
+    return scale(co,-0.6,0.6,0,370);
+}
+
+function scale (number, inMin, inMax, outMin, outMax) {
+    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }

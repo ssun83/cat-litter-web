@@ -1,5 +1,3 @@
-
-
 const serviceUuid = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
 let txCharacteristic;
 let rxCharacteristic;
@@ -207,17 +205,16 @@ function gotCharacteristics(error, characteristics) {
 // A function that will be called once got characteristics
 //This is our gotValue
 function handleNotifications(data) {
-
-    if (data.includes("test starting")){
-        gauge.set(Math.random() * 100);
-        dataStatus.innerHTML = "TESTING"
-    }
     //console.log("data: ", data)
     // if (data.includes('data') || buffer.includes('data')) {
     //     buffer = buffer.concat(data);
     // }
     if (data) {
-        buffer = buffer.concat(data);
+        if (data.includes("test starting")){
+            dataStatus.innerHTML = "TESTING"
+        } else {
+          buffer = buffer.concat(data);
+        }
     }
     console.log(buffer)
 

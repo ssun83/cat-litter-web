@@ -359,14 +359,14 @@ function actualizarData(chart) {
 }
 
 function v2c(v) {
-    var vn = (v-0.336387)*0.001325;
+    var vn = (v-0.336387);
     var co = 0;
-    if (Math.abs(vn) > 1) {
-      co = 1-(0.1*Math.abs(vn));
-    } else if (vn < -0.6){
-      co = -0.6+(0.1*Math.abs(vn));
+    if (Math.abs(v) > 1.65){
+      co = (vn/Math.abs(vn)) * (1.65-(0.3*Math.abs(vn)));
+    }else{
+      co = vn;
     }
-    return scale(co,-0.6,0.6,0,370);
+    return scale(co,-1.65,1.65,0,370);
 }
 
 function scale (number, inMin, inMax, outMin, outMax) {

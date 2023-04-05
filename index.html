@@ -13,6 +13,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/styless_home.css">
 
     <!-- chart js -->
@@ -29,7 +33,7 @@
         <h1>cirCAT: PURRtentio App 😼</h1>
     </header>
 
-    <h2>Connect your purrtentiostat</h2>
+    <h3>Connect your purrtentiostat</h3>
     <div>
         <button id='connectButton' class='button-body' type='button'>Connect</button>
         <button id='disconnectButton' class='button-body' type='button'>Disconnect</button>
@@ -40,17 +44,17 @@
         <button id='pumpButton' class='button-body' type='button'>Pump!</button>
         <p id='dataStatus'>Data</p>
 
-        <div>
+        <div style="height: 30%;">
             <canvas id="demo"></canvas>
             <div id="preview-textfield"></div>
         </div>
     </div>
 
-    <div style="margin-left: 10%; margin-right: 10%;">
-        <canvas width="60%" height="20%" id="myChart"></canvas>
+    <div class="chartPlot">
+        <canvas  id="myChart"></canvas>
     </div>
 
-    <div>
+    <div style="padding: 15px; max-width: 70vw; margin: auto;">
         <table>
             <thead>
                 <tr>

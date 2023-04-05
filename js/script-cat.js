@@ -35,6 +35,7 @@ let config = {
     data: data,
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             title: {
                 display: true,
@@ -119,7 +120,7 @@ var opts = {
         subColor: "#666666"
     },
     // the span of the gauge arc
-    angle: 0.10,
+    angle: 0.0,
     // line thickness
     lineWidth: 0.44,
     // radius scale
@@ -264,7 +265,7 @@ function handleNotifications(data) {
         //update the text
         if(jsonDone){
             dataStatus.innerHTML = "LAST RECORD: \n" + timenow + "\n" +
-                                    "Concentration: " + concentration.toString() + " mM" +
+                                    "<b> Concentration: " + concentration.toString() + " mM. </b>" +
                                     "\n" + "Current: " + i.toString() + " mA" + "\n" +
                                     "Potential: " + v.toString() + " V";
         }

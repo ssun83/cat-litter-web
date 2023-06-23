@@ -1,3 +1,6 @@
+const serviceUuid = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+let txCharacteristic;
+let rxCharacteristic;
 let myValue = "0";
 let buffer = "";
 let jsonData = {};
@@ -8,6 +11,7 @@ let i = 0;
 let concentration = 0;
 let done = false;
 let timenow = "";
+let myBLE;
 let isConnected = false;
 
 // data for chart
@@ -142,97 +146,146 @@ gauge.setMinValue(0);
 gauge.animationSpeed = 32;
 gauge.set(0);
 
-// connectButton.addEventListener('click', function () {
-//     console.log("connect button clicked");
-// })
-//
-// disconnectButton.addEventListener('click', function () {
-// })
+// ble
+myBLE = new p5ble();
 
-function writeData(toWrite) {
-  set(toWrite);
-}
+connectButton.addEventListener('click', function () {
+    console.log("connect button clicked");
+    connectToBle();
+})
+
+disconnectButton.addEventListener('click', function () {
+    disconnectToBle();
+})
+
+// startButton.addEventListener('click', function () {
+//     readToBle();
+// })
 
 ocpButton.addEventListener('click', function () {
-    writeData("default ca");
+    writeToBle("default ocp");
 })
 
 pumpButton.addEventListener('click', function () {
-    writeData('{"pump":5}');
+    writeToBle('{"pump":5}');
 })
 
+function connectToBle() {
+    // Connect to a device by passing the service UUID
+    myBLE.connect(serviceUuid, gotCharacteristics);
+    isConnected = myBLE.isConnected();
+    console.log(isConnected)
+    statStatus.innerHTML = (isConnected ? "PURRtentio: Connected" : "PURRtentio: Disconnected");
+}
 
+function disconnectToBle() {
+    // Disonnect to the device
+    myBLE.disconnect();
+    // Check if myBLE is connected
+    isConnected = myBLE.isConnected();
+    statStatus.innerHTML = (isConnected ? "PURRtentio: Connected" : "PURRtentio: Disconnected");
+}
 
-// HANDLE DATA
-// function handleNotifications(data) {
-//     //console.log("data: ", data)
-//     // if (data.includes('data') || buffer.includes('data')) {
-//     //     buffer = buffer.concat(data);
-//     // }
-//     if (data) {
-//         if (data.includes("test starting")){
-//             dataStatus.innerHTML = "TESTING"
-//         } else {
-//           buffer = buffer.concat(data);
-//         }
-//     }
-//     //console.log(buffer)
-//
-//     if (buffer.includes('$')) {
-//         timenow = new Date().toLocaleTimeString();
-//
-//         myValue = buffer;
-//         buffer = "";
-//         myValue = myValue.replace('$', '');
-//         myValue = myValue.replace('True', 'true');
-//         myValue = myValue.replace('False', 'false');
-//         myValue = myValue.replaceAll("'", '"');
-//         myValue = myValue.replaceAll("'", '"');
-//         // done = myValue.done;
-//         jsonData = JSON.parse(myValue).data;
-//         jsonDone = JSON.parse(myValue).done;
-//
-//         console.log(jsonData)
-//         v = jsonData.v;
-//         i = jsonData.i;
-//         t = jsonData.t;
-//         console.log(v, i, t);
-//
-//         concentration = v2c(v);
-//         console.log(concentration);
-//
-//         // add new data to the chart
-//         timeSeries.push(timenow);
-//         concentrationSeries.push(concentration);
-//         console.log(concentrationSeries);
-//
-//         //update the gauge
-//         gauge.set(concentration);
-//         var row = tableRow.insertRow(-1);
-//         var cell1 = row.insertCell(0);
-//         var cell2 = row.insertCell(1);
-//         var cell3 = row.insertCell(2);
-//         var cell4 = row.insertCell(3);
-//         cell1.innerHTML = timenow;
-//         cell2.innerHTML = i.toString();
-//         cell3.innerHTML = v.toString();
-//         cell4.innerHTML = concentration.toString();
-//
-//         //update the text
-//         if(jsonDone){
-//             dataStatus.innerHTML = "LAST RECORD: \n" + timenow + "\n" +
-//                                     "<b> Concentration: " + concentration.toString() + " mM. </b>" +
-//                                     "\n" + "Current: " + i.toString() + " mA" + "\n" +
-//                                     "Potential: " + v.toString() + " V";
-//         }
-//         actualizarData(myChart);
-//
-//     }
-//
-//     // Add a event handler when the device is disconnected
-//     myBLE.onDisconnected(onDisconnected)
-// }
+function onDisconnected() {
+    console.log('Device got disconnected.');
+    isConnected = false;
+    statStatus.innerHTML = (isConnected ? "PURRtentio: Connected" : "PURRtentio: Disconnected");
+}
 
+// A function that will be called once got characteristics
+function gotCharacteristics(error, characteristics) {
+
+    if (error) console.log('error: ', error);
+    console.log('characteristics: ', characteristics);
+    rxCharacteristic = characteristics[0]
+    txCharacteristic = characteristics[1];
+    readToBle();
+    isConnected = myBLE.isConnected();
+
+    //just so the connection status is up to date always
+    statStatus.innerHTML = (isConnected ? "PURRtentio Connected" : "PURRtentio Disconnected");
+}
+
+// A function that will be called once got characteristics
+//This is our gotValue
+function handleNotifications(data) {
+    //console.log("data: ", data)
+    // if (data.includes('data') || buffer.includes('data')) {
+    //     buffer = buffer.concat(data);
+    // }
+    if (data) {
+        if (data.includes("test starting")){
+            dataStatus.innerHTML = "TESTING"
+        } else {
+          buffer = buffer.concat(data);
+        }
+    }
+    //console.log(buffer)
+
+    if (buffer.includes('$')) {
+        timenow = new Date().toLocaleTimeString();
+
+        myValue = buffer;
+        buffer = "";
+        myValue = myValue.replace('$', '');
+        myValue = myValue.replace('True', 'true');
+        myValue = myValue.replace('False', 'false');
+        myValue = myValue.replaceAll("'", '"');
+        myValue = myValue.replaceAll("'", '"');
+        // done = myValue.done;
+        jsonData = JSON.parse(myValue).data;
+        jsonDone = JSON.parse(myValue).done;
+
+        console.log(jsonData)
+        v = jsonData.v;
+        i = jsonData.i;
+        t = jsonData.t;
+        console.log(v, i, t);
+
+        concentration = v2c(v);
+        console.log(concentration);
+
+        // add new data to the chart
+        timeSeries.push(timenow);
+        concentrationSeries.push(concentration);
+        console.log(concentrationSeries);
+
+        //update the gauge
+        gauge.set(concentration);
+        var row = tableRow.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell1.innerHTML = timenow;
+        cell2.innerHTML = i.toString();
+        cell3.innerHTML = v.toString();
+        cell4.innerHTML = concentration.toString();
+
+        //update the text
+        if(jsonDone){
+            dataStatus.innerHTML = "LAST RECORD: \n" + timenow + "\n" +
+                                    "<b> Concentration: " + concentration.toString() + " mM. </b>" +
+                                    "\n" + "Current: " + i.toString() + " mA" + "\n" +
+                                    "Potential: " + v.toString() + " V";
+        }
+        actualizarData(myChart);
+
+    }
+
+    // Add a event handler when the device is disconnected
+    myBLE.onDisconnected(onDisconnected)
+}
+
+function readToBle() {
+    myBLE.startNotifications(txCharacteristic, handleNotifications, 'string');
+    // myBLE.read(txCharacteristic, gotValue);
+}
+
+function writeToBle(writeValue) {
+    // Write the value of the input to the txCharacteristic
+    myBLE.write(rxCharacteristic, writeValue);
+}
 
 function tableToCSV() {
 

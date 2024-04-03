@@ -80,8 +80,8 @@ let config = {
 };
 
 // buttons
-let connectButton = document.getElementById("connectButton");
-let disconnectButton = document.getElementById("disconnectButton");
+// let connectButton = document.getElementById("connectButton");
+// let disconnectButton = document.getElementById("disconnectButton");
 // let startButton = document.getElementById("collectButton");
 let exportButton = document.getElementById("exportButton");
 let pumpButton = document.getElementById("pumpButton");

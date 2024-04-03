@@ -14,7 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-set("database reached");
 
 let myValue = "0";
 let buffer = "";

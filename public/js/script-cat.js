@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+import { getDatabase, set } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBf7XtYcIMSm12nbjhvRvjawSBothTnJeU",
